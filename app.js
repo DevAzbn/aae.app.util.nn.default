@@ -21,9 +21,11 @@ var nn_data = app.loadJSON('nn/main');
 
 var brain = require('brain.js');
 var nn = new brain.NeuralNetwork({
+	//activation : 'sigmoid',
 	hiddenLayers: [256,64],
 	learningRate: 0.1, // global learning rate, useful when training using streams
 });
+//var nn = new brain.recurrent.RNN();
 
 nn.fromJSON(nn_data);
 
