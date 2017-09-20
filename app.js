@@ -16,23 +16,32 @@ var argv = require('optimist')
 
 app.clearRequireCache(require);
 
-//var train_data = app.loadJSON('train_data');
-var train_data = app.loadJSON('main');
+var train_data = app.loadJSON('train/main');
+var nn_data = app.loadJSON('nn/main');
 
 var brain = require('brain.js');
 var nn = new brain.NeuralNetwork({
-	hiddenLayers: [4],
-	learningRate: 0.6, // global learning rate, useful when training using streams
+	hiddenLayers: [256,64],
+	learningRate: 0.1, // global learning rate, useful when training using streams
 });
 
-nn.fromJSON(train_data);
+nn.fromJSON(nn_data);
 
-var output = nn.run({
+var _input = {
 	r : 1,
-	g : 0,
+	//g : 0,
 	b : 1
-});
+};
 
-app.saveJSON('main', nn.toJSON());
+var _output = nn.run(_input);
 
-console.log(output);
+train_data.push({
+	input : _input,
+	output : _output,
+})
+
+app.saveJSON('train/main', train_data);
+
+app.saveJSON('nn/main', nn.toJSON());
+
+console.log(_output);

@@ -16,7 +16,7 @@ var argv = require('optimist')
 
 app.clearRequireCache(require);
 
-var train_data = app.loadJSON('train_data');
+var train_data = app.loadJSON('train/main');
 //var train_data = app.loadJSON('autotrain');
 
 //console.dir(train_data);
@@ -24,8 +24,8 @@ var train_data = app.loadJSON('train_data');
 
 var brain = require('brain.js');
 var nn = new brain.NeuralNetwork({
-	hiddenLayers: [4],
-	learningRate: 0.6, // global learning rate, useful when training using streams
+	hiddenLayers: [256,64],
+	learningRate: 0.1, // global learning rate, useful when training using streams
 });
 
 
@@ -37,4 +37,4 @@ nn.train(train_data, {
 	learningRate : 0.1		// learning rate
 });
 
-app.saveJSON('main', nn.toJSON());
+app.saveJSON('nn/main', nn.toJSON());
