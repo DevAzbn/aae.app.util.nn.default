@@ -7,8 +7,8 @@ var azbn = new require(__dirname + '/../../../../../system/bootstrap')({
 var app = azbn.loadApp(module);
 
 var argv = require('optimist')
-	//.usage('Usage: $0 --path=[Path to root dir] --ext=[Fileext] --str=[String]')
-	//.default('path', './')
+	.usage('Usage: $0 --nn=[Name of neural network]')
+	.default('nn', 'main')
 	//.default('ext', '.php')
 	//.demand(['str'])
 	.argv
@@ -16,15 +16,14 @@ var argv = require('optimist')
 
 app.clearRequireCache(require);
 
-var train_data = app.loadJSON('train/main');
-var nn_data = app.loadJSON('nn/main');
+var train_data = app.loadJSON('train/' + argv.nn);
+var cfg_data = app.loadJSON('cfg/' + argv.nn);
+var nn_data = app.loadJSON('nn/' + argv.nn);
 
 var brain = require('brain.js');
-var nn = new brain.NeuralNetwork({
-	//activation : 'sigmoid',
-	hiddenLayers: [256,64],
-	learningRate: 0.1, // global learning rate, useful when training using streams
-});
+
+var nn = new brain.NeuralNetwork(cfg_data);
+
 //var nn = new brain.recurrent.RNN();
 
 nn.fromJSON(nn_data);
@@ -42,8 +41,8 @@ train_data.push({
 	output : _output,
 })
 
-app.saveJSON('train/main', train_data);
+app.saveJSON('train/' + argv.nn, train_data);
 
-app.saveJSON('nn/main', nn.toJSON());
+app.saveJSON('nn/' + argv.nn, nn.toJSON());
 
 console.log(_output);
