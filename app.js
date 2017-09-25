@@ -29,13 +29,14 @@ var nn = new brain.NeuralNetwork(cfg_data);
 nn.fromJSON(nn_data);
 
 var _input = {
-	r : 1,
+	x : 0.9999546021312976,
 	//g : 0,
-	b : 1
+	b : 0.9525741268224334
 };
 
 var _output = nn.run(_input);
 
+/*
 train_data.push({
 	input : _input,
 	output : _output,
@@ -44,5 +45,6 @@ train_data.push({
 app.saveJSON('train/' + argv.nn, train_data);
 
 app.saveJSON('nn/' + argv.nn, nn.toJSON());
+*/
 
 console.log(_output);

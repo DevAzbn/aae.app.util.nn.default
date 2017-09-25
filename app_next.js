@@ -11,16 +11,16 @@ var argv = require('optimist')
 	.default('nn', 'main')
 	//.default('ext', '.php')
 	//.demand(['str'])
+	.demand(['x'])
+	.demand(['b'])
 	.argv
 ;
 
 app.clearRequireCache(require);
 
-var train_data = app.loadJSON('train/' + argv.nn);
+var train_data = app.loadJSON('normal/' + argv.nn);
 var cfg_data = app.loadJSON('cfg/' + argv.nn);
-
-//https://www.npmjs.com/package/brain.js
-
+var nn_data = app.loadJSON('nn/' + argv.nn);
 
 var brain = require('brain.js');
 
@@ -28,16 +28,25 @@ var nn = new brain.NeuralNetwork(cfg_data);
 
 //var nn = new brain.recurrent.RNN();
 
+nn.fromJSON(nn_data);
 
-nn.train(train_data, {
-	errorThresh : 0.0005,	// error threshold to reach 0.005
-	iterations : 20000,		// maximum training iterations
-	log : true,				// console.log() progress periodically
-	logPeriod : 1,			// number of iterations between logging
-	learningRate : 0.1		// learning rate
-});
+var _input = {
+	x : (1/(1 + (Math.exp(- argv.x)))),
+	//g : 0,
+	b : (1/(1 + (Math.exp(- argv.b)))),
+};
+
+var _output = nn.run(_input);
+
+/*
+train_data.push({
+	input : _input,
+	output : _output,
+})
+
+app.saveJSON('train/' + argv.nn, train_data);
 
 app.saveJSON('nn/' + argv.nn, nn.toJSON());
+*/
 
-
-//(1/(1 + (Math.exp(-x)))).toString()
+console.log(_output);
